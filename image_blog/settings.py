@@ -37,12 +37,17 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'crispy_forms',
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'storages',
+    'comments',
+    'fluent_comments',
+#    'threadedcomments',
+    'django_comments',
 ]
 
 MIDDLEWARE = [
@@ -155,3 +160,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_REGION_NAME = 'eu-central-1'
 
 django_heroku.settings(locals())
+
+SITE_ID=1
+COMMENTS_APP = 'fluent_comments'
+FLUENT_COMMENTS_FORM_CLASS = 'fluent_comments.forms.CompactLabelsCommentForm'

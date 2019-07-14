@@ -1,4 +1,33 @@
 {% extends "blog/base.html" %}
-{% block content %}
-    <h1>About page</h1>
-{% endblock content %}
+{% load static %}
+{% block blog %}{% endblock %}
+{% block about %}
+<!--
+<main role="main" class="about">
+  <section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">Album example</h1>
+      <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+      <p>
+        <a href="#" class="btn btn-primary my-2">Main call to action</a>
+        <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+      </p>
+    </div>
+  </section>
+-->
+<main role="main" class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="content-section">
+        <h1 class="text-center">About Page</h1>
+        <p class="text-center">This is a site. </p>
+            <!--
+            <a href="https://wa.me/79166958771">
+               <img src="{% static 'blog/WhatsApp.svg' %}" style="width:100px;height:100px;border:0;">
+            </a>
+            -->
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

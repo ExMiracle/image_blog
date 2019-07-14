@@ -82,3 +82,31 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+/*.about {
+  background: #fafafa;
+  color: #333333;
+  margin-top: 0rem;
+}*/
+
+.comment-section {
+  background: #f0f8fc;
+  padding: 5px 10px;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  margin-bottom: 5px;
+}
+
+.comment-section-header {
+  background: #f0f8fc;
+  padding: 5px 10px;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  margin-bottom: 5px;
+}
+
+.comment-img {
+  height: 40px;
+  width: 40px;
+  margin-right: 10px;
+}

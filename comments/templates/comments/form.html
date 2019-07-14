@@ -1,0 +1,23 @@
+{% load comments i18n fluent_comments_tags crispy_forms_tags %}
+<div >
+{% if user.is_authenticated %}
+    <form id="comment-form-{{ form.target_object.pk }}" data-object-id="{{ form.target_object.pk }}" action="{% comment_form_target %}" method="post" class="{% block form_class %}{{ form.helper.form_class|default:'js-comments-form comments-form form-horizontal' }}{% endblock %}"
+          data-ajax-action="{% url 'comments-post-comment-ajax' %}">
+        {% csrf_token %}
+        {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                {{ field|as_crispy_field}}
+            {% else %}
+                {% if field.name != "name" and field.name != "email" and field.name != "url" %}
+                    {% if field.errors %}{{ field.errors }}{% endif %}
+                    <p {% if field.errors %} class="error"{% endif %} {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
+                    {{ field|as_crispy_field }}
+                    </p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <input type="submit" name="post" class="btn btn-primary" value="{% trans 'Post Comment' %}" />
+    </form>
+{% endif %}
+</div>
