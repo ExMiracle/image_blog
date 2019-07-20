@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ.get('DEBUG_VALUE') == 'True')
 
+
 ALLOWED_HOSTS = ['exmiracleblog.herokuapp.com']
 
 
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
+    # 'coverage',
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.auth',
