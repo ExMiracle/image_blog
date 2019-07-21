@@ -3,6 +3,33 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from .models import Friend, Profile
+from django.views.generic import DetailView
+
+class ProfileView(DetailView):
+    model = Profile
+    template_name = 'users/profile_new.html'
+    
+    def get_object(self):
+        return get_object_or_404(User, username=self.kwargs.get('username'))
+
+@login_required
+def add_or_remove_friends(request, username, verb):
+    n_f = get_object_or_404(User, username=username)
+    owner = request.user.profile.user
+    new_friend = Profile.objects.get(user=n_f)
+
+    if verb == "add":
+        new_friend.followers.add(owner)
+        Friend.make_friend(owner, new_friend)
+    else:
+        new_friend.followers.remove(owner)
+        Friend.remove_friend(owner, new_friend)
+
+    return redirect(new_friend.get_absolute_url())
+
 
 
 def register(request):
