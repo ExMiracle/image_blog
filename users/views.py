@@ -10,10 +10,16 @@ from django.views.generic import DetailView
 
 class ProfileView(DetailView):
     model = Profile
-    template_name = 'users/profile_new.html'
+    template_name = 'users/profile.html'
     
     def get_object(self):
         return get_object_or_404(User, username=self.kwargs.get('username'))
+    
+    def get_user(self):
+        if self.request.user is None:
+            return None
+        return self.request.user
+        
 
 @login_required
 def add_or_remove_friends(request, username, verb):
@@ -65,6 +71,6 @@ def profile(request):
             'p_form': p_form 
     }
     
-    return render(request, 'users/profile.html', context)
+    return render(request, 'users/profile-edit.html', context)
 # Create your views here.
 
