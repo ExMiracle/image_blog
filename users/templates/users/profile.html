@@ -1,18 +1,28 @@
 {% extends "blog/base.html" %}
 {% block blog %}{% endblock %}
-{% block misc %}
+{% block content2 %}
 <div class="content-section">
-  <div class="navbar">
-    <a class="active" href="#">Home</a> 
-    <a href="#">Search</a> 
-    <a href="#">Contact</a> 
-    <a href="#">Login</a>
+  <div class="container navbar-expand-md navbar-light bg-white">
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleProfile" aria-controls="navbarToggleProfile" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarToggleProfile">
+        <div class="navbar-nav nav-fill w-100 align-items-start">
+          <a class="nav-item nav-link" href="{% url 'profile' user %}">Overview</a>
+          <a class="nav-item nav-link" href="{% url 'user-posts' user %}">Posts</a>
+          <a class="nav-item nav-link" href="#">Followers</a>
+          <a class="nav-item nav-link" href="#">Following</a>
+        </div>
+      </div>
+
   </div>
-  <div class="media">
-    <div class="media-body">
+  <div class="container media pt-3">
+    <div class="media-body text-center">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
-        {{ user.username }}
+        <h4>{{ user.username }}</h4>
         {% if user == request.user%}
+          <p>Email: {{ user.email }}</p>
           <a class="btn btn-outline-info mb-4" href="{% url 'profile-edit' %}">Edit</a>
         {% endif %}
     </div>
