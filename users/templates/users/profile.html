@@ -15,7 +15,6 @@
           <a class="nav-item nav-link" href="#">Following</a>
         </div>
       </div>
-
   </div>
   <div class="container media pt-3">
     <div class="media-body text-center">
@@ -24,6 +23,8 @@
         {% if user == request.user%}
           <p>Email: {{ user.email }}</p>
           <a class="btn btn-outline-info mb-4" href="{% url 'profile-edit' %}">Edit</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{% url 'friends' %}">Befriend</a>
         {% endif %}
     </div>
   </div>

@@ -5,7 +5,8 @@ from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .models import Friend, Profile
+from .models import Profile
+#from . import models
 from django.views.generic import DetailView
 
 class ProfileView(DetailView):
@@ -22,19 +23,18 @@ class ProfileView(DetailView):
         
 
 @login_required
-def add_or_remove_friends(request, username, verb):
+def making_friends(request, username, status):
     n_f = get_object_or_404(User, username=username)
-    owner = request.user.profile.user
+    owner = request.user.profile
     new_friend = Profile.objects.get(user=n_f)
 
-    if verb == "add":
-        new_friend.followers.add(owner)
-        Friend.make_friend(owner, new_friend)
+    if status == 1:
+        owner.add_relationship(new_friend, RELATIONSHIP_FOLLOWING)
     else:
-        new_friend.followers.remove(owner)
-        Friend.remove_friend(owner, new_friend)
+        owner.remove_relationship(new_friend, RELATIONSHIP_FOLLOWING)
 
-    return redirect(new_friend.get_absolute_url())
+    return redirect('friend_page.html')
+#    pass
 
 
 
