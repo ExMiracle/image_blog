@@ -22,3 +22,6 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image']
+        
+#class ButtonForm(forms.Form):
+#    btn = forms.CharField()

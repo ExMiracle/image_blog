@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'fluent_comments',
 #    'threadedcomments',
     'django_comments',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

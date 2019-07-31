@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load staticfiles %}
 {% block blog %}{% endblock %}
 {% block content2 %}
 <div class="content-section">
@@ -9,7 +10,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarToggleProfile">
         <div class="navbar-nav nav-fill w-100 align-items-start">
-          <a class="nav-item nav-link" href="{% url 'profile' user %}">Overview</a>
+          <a class="nav-item nav-link" href="{% url 'profile' user.username %}">Overview</a>
           <a class="nav-item nav-link" href="{% url 'user-posts' user %}">Posts</a>
           <a class="nav-item nav-link" href="#">Followers</a>
           <a class="nav-item nav-link" href="#">Following</a>
@@ -20,11 +21,19 @@
     <div class="media-body text-center">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
         <h4>{{ user.username }}</h4>
-        {% if user == request.user%}
+        {% if user == request.user %}
           <p>Email: {{ user.email }}</p>
           <a class="btn btn-outline-info mb-4" href="{% url 'profile-edit' %}">Edit</a>
+          <p>My friends: {{ request.user.profile.get_following }}</p>
         {% else %}
-          <a class="btn btn-outline-info mb-4" href="{% url 'friends' %}">Befriend</a>
+        
+          {% block jquery %}
+          {% endblock %}
+          <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+          <script src="{% static 'blog/main.js' %}"></script>
+          <!--<a class="btn btn-primary" id="friend" data-href="{{ instance.get_api_friend_url }}" href="{{ instance.get_friend_url }}">Follow</a>-->
+          <a class="btn btn-primary" id="friend" data-href="{% url 'api-follow' user.username %}" href="{% url 'follow' user.username %}">Follow</a>
+          <!--<button href="{% url 'follow' user.username %}" type="button">Follow</button>-->
         {% endif %}
     </div>
   </div>

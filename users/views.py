@@ -2,12 +2,22 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-
+#from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
-#from . import models
-from django.views.generic import DetailView
+
+#from .forms import ButtonForm
+#from django.http import JsonResponse
+
+from django.views.generic import DetailView, RedirectView
+#from django.views import View
+
+
+
+
+
+
 
 class ProfileView(DetailView):
     model = Profile
@@ -20,23 +30,65 @@ class ProfileView(DetailView):
         if self.request.user is None:
             return None
         return self.request.user
+    
+class FollowRedirectView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        n_f = get_object_or_404(User, username=self.kwargs.get('username'))
+        owner = self.request.user.profile
+        new_friend = Profile.objects.get(user=n_f)
+        url_ = new_friend.get_absolute_url()
+#        updated = False
+#        friended = False
+        if new_friend in owner.get_following():
+            owner.remove_relationship(new_friend, 1)
+#            friended = False
+        else:
+            owner.add_relationship(new_friend, 1)
+#            friended = True
+#        updated = True
+#        data = {
+#                'updated': updated,
+#                'friends': friended,
+#                'url': url_
+#        }
+#        return JsonResponse(data)
+        return url_
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+
+class PostFriendAPIView(APIView):
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, username=None, format=None):
+        # slug = self.kwargs.get("slug")
+#        obj = get_object_or_404(Post, slug=slug)
+#        url_ = obj.get_absolute_url()
+#        user = self.request.user
         
+#        n_f = get_object_or_404(User, username=self.kwargs.get('username'))
+        n_f = get_object_or_404(User, username=username)
+        owner = self.request.user.profile
+        new_friend = Profile.objects.get(user=n_f)
+#        url_ = new_friend.get_absolute_url()
+        updated = False
+        friended = False
+        if new_friend in owner.get_following():
+            friended = False
+            owner.remove_relationship(new_friend, 1)
 
-@login_required
-def making_friends(request, username, status):
-    n_f = get_object_or_404(User, username=username)
-    owner = request.user.profile
-    new_friend = Profile.objects.get(user=n_f)
-
-    if status == 1:
-        owner.add_relationship(new_friend, RELATIONSHIP_FOLLOWING)
-    else:
-        owner.remove_relationship(new_friend, RELATIONSHIP_FOLLOWING)
-
-    return redirect('friend_page.html')
-#    pass
-
-
+        else:
+            friended = True
+            owner.add_relationship(new_friend, 1)
+        updated = True
+        data = {
+            "updated": updated,
+            "friended": friended
+        }
+        return Response(data)
 
 def register(request):
     if request.method == 'POST':
@@ -62,6 +114,7 @@ def profile(request):
             p_form.save()
             messages.success(request, f'Your account has been updated.')
             return redirect('profile')
+#            return redirect({{ profile.get_absolute_urls }})
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
@@ -73,4 +126,3 @@ def profile(request):
     
     return render(request, 'users/profile-edit.html', context)
 # Create your views here.
-
