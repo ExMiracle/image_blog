@@ -29,11 +29,9 @@
         
           {% block jquery %}
           {% endblock %}
-          <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+          <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
           <script src="{% static 'blog/main.js' %}"></script>
-          <!--<a class="btn btn-primary" id="friend" data-href="{{ instance.get_api_friend_url }}" href="{{ instance.get_friend_url }}">Follow</a>-->
           <a class="btn btn-primary" id="friend" data-href="{% url 'api-follow' user.username %}" href="{% url 'follow' user.username %}">Follow</a>
-          <!--<button href="{% url 'follow' user.username %}" type="button">Follow</button>-->
         {% endif %}
     </div>
   </div>
