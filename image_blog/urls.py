@@ -3,7 +3,6 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.urls import include
 from users import views as user_views
-#from users.views import FriendView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -12,11 +11,11 @@ urlpatterns = [
     path('', include('blog.urls')),
     path('register/', user_views.register, name='register'),
     path('user/<str:username>/', user_views.ProfileView.as_view(), name = 'profile'),
+    path('user/<str:username>/followers', user_views.ProfileFollowerView.as_view(), name = 'profile-followers'),
+    path('user/<str:username>/following', user_views.ProfileFollowingView.as_view(), name = 'profile-following'),
     path('edit/', user_views.profile, name='profile-edit'),
     path('user/<str:username>/follow', user_views.FollowRedirectView.as_view(), name = 'follow'),
     path('api/user/<str:username>/follow', user_views.PostFriendAPIView.as_view(), name = 'api-follow'),
-#    path('user/<str:username>/friend/', user_views.FriendView.as_view(), name = 'friends'),
-#    path('user/<str:username>/friend/', user_views.making_friends, name='friends'),
     path('login/', auth_views.LoginView.as_view(template_name = 'users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name = 'users/logout.html'), name='logout'),
     path('password-reset/', auth_views.PasswordResetView.as_view(

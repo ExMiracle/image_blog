@@ -1,0 +1,10 @@
+{% extends "blog/base.html" %}
+{% block blog %}{% endblock %}
+{% block content2 %}
+
+  {% for follower in followers %}
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ follower.image.url }}">
+    </article>      
+  {% endfor %}
+{% endblock %}

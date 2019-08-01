@@ -4,17 +4,14 @@ from django.urls import reverse
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
-#    username = models.OneToOneField(User, on_delete = models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     relationships = models.ManyToManyField('self', through='Relationship',
                                            symmetrical=False,
                                            related_name='related_to')
     
     def get_absolute_url(self):
-#        username = get_object_or_404(User, username=self.kwargs.get('username'))
         username = User.objects.get(username=self.user).username
         return reverse('profile', args=[username])
-#        return reverse('profile', args={'user': self.user})
 
     def get_friend_url(self):
         username = User.objects.get(username=self.user).username

@@ -1,20 +1,37 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-#from django.views.generic.edit import FormView
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from django.shortcuts import get_object_or_404
 from .models import Profile
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+from django.views.generic import DetailView, RedirectView, ListView, View
 
-#from .forms import ButtonForm
-#from django.http import JsonResponse
-
-from django.views.generic import DetailView, RedirectView
-#from django.views import View
-
-class ProfileView(DetailView):
+    
+class TryView(View):
     model = Profile
+    
+    def friend_check(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        profile = Profile.objects.get(user=user)
+        follower_list = self.request.user.profile.get_following()
+        if profile in follower_list:
+            return "Unfollow"
+        else:
+            return "Follow"
+
+    def get_context_data(self, **kwargs):
+        context = super(TryView, self).get_context_data(**kwargs)
+        if self.friend_check() == "Unfollow":
+            context['color'] = 'btn-info'
+        else:
+            context['color'] = 'btn-outline-info'
+        return context
+
+class ProfileView(TryView, DetailView):
     template_name = 'users/profile.html'
     
     def get_object(self):
@@ -25,6 +42,78 @@ class ProfileView(DetailView):
             return None
         return self.request.user
     
+class ProfileFollowerView(TryView, ListView):
+    template_name = 'users/followers.html' # <app>/<model?_<viewtype>.html
+    context_object_name = 'followers'
+    paginate_by = 50
+    
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Profile.objects.get(user=user).get_followers()
+    
+class ProfileFollowingView(TryView, ListView):
+    template_name = 'users/following.html' # <app>/<model?_<viewtype>.html
+    context_object_name = 'following'
+    paginate_by = 50
+    
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Profile.objects.get(user=user).get_following()    
+
+
+
+
+
+#class ProfileView(DetailView):
+#    model = Profile
+#    template_name = 'users/profile.html'
+#    
+#    def get_object(self):
+#        return get_object_or_404(User, username=self.kwargs.get('username'))
+#    
+#    def get_user(self):
+#        if self.request.user is None:
+#            return None
+#        return self.request.user
+#    
+#    def friend_check(self):
+#        user = get_object_or_404(User, username=self.kwargs.get('username'))
+#        profile = Profile.objects.get(user=user)
+#        follower_list = self.request.user.profile.get_following()
+#        if profile in follower_list:
+#            return "Unfollow"
+#        else:
+#            return "Follow"
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(ProfileView, self).get_context_data(**kwargs)
+#        if self.friend_check() == "Unfollow":
+#            context['color'] = 'btn-info'
+#        else:
+#            context['color'] = 'btn-outline-info'
+#        return context
+#
+#class ProfileFollowerView(ListView):
+#    model = Profile
+#    template_name = 'users/followers.html' # <app>/<model?_<viewtype>.html
+#    context_object_name = 'followers'
+#    paginate_by = 50
+#    
+#    def get_queryset(self):
+#        user = get_object_or_404(User, username=self.kwargs.get('username'))
+#        return Profile.objects.get(user=user).get_followers()
+#    
+#        
+#class ProfileFollowingView(ListView):
+#    model = Profile
+#    template_name = 'users/following.html' # <app>/<model?_<viewtype>.html
+#    context_object_name = 'following'
+#    paginate_by = 50
+#    
+#    def get_queryset(self):
+#        user = get_object_or_404(User, username=self.kwargs.get('username'))
+#        return Profile.objects.get(user=user).get_following()
+
 class FollowRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         n_f = get_object_or_404(User, username=self.kwargs.get('username'))
@@ -36,11 +125,6 @@ class FollowRedirectView(RedirectView):
         else:
             owner.add_relationship(new_friend, 1)
         return url_
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
 
 class PostFriendAPIView(APIView):
     authentication_classes = (authentication.SessionAuthentication,)
@@ -88,8 +172,7 @@ def profile(request):
             u_form.save()
             p_form.save()
             messages.success(request, f'Your account has been updated.')
-            # return redirect('profile')
-            return redirect({{ profile.get_absolute_url }})
+            return redirect('profile', username=request.user.username)
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
@@ -98,6 +181,4 @@ def profile(request):
             'u_form': u_form,
             'p_form': p_form 
     }
-    
     return render(request, 'users/profile-edit.html', context)
-# Create your views here.
