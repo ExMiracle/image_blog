@@ -13,13 +13,24 @@ class Profile(models.Model):
         username = User.objects.get(username=self.user).username
         return reverse('profile', args=[username])
 
-    def get_friend_url(self):
+    def get_following_url(self):
         username = User.objects.get(username=self.user).username
-        return reverse('follow', args=[username])
+        return reverse('profile-following', args=[username])
     
-    def get_api_friend_url(self):
+    def get_followers_url(self):
         username = User.objects.get(username=self.user).username
-        return reverse('api-follow', args=[username])
+        return reverse('profile-followers', args=[username])
+    
+    def get_username(self):
+        return self.user.username
+        
+#    def get_friend_url(self):
+#        username = User.objects.get(username=self.user).username
+#        return reverse('follow', args=[username])
+#    
+#    def get_api_friend_url(self):
+#        username = User.objects.get(username=self.user).username
+#        return reverse('api-follow', args=[username])
     
     def __str__(self):
         return f'{self.user.username} Profile'

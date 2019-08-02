@@ -8,13 +8,15 @@ from .models import Profile
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
-from django.views.generic import DetailView, RedirectView, ListView, View
+from django.views.generic import DetailView, ListView, View
+#from django.contrib.auth.mixins import LoginRequiredMixin
 
-    
+
 class TryView(View):
     model = Profile
     
     def friend_check(self):
+#        if self.request.user.is_authenticated:
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         profile = Profile.objects.get(user=user)
         follower_list = self.request.user.profile.get_following()
@@ -22,14 +24,22 @@ class TryView(View):
             return "Unfollow"
         else:
             return "Follow"
+#        else:
+#            return None
 
     def get_context_data(self, **kwargs):
+#        if self.request.user.is_authenticated:
         context = super(TryView, self).get_context_data(**kwargs)
+#        if not self.friend_check():
+#            return None
         if self.friend_check() == "Unfollow":
             context['color'] = 'btn-info'
         else:
             context['color'] = 'btn-outline-info'
         return context
+#        else:
+#            return None
+
 
 class ProfileView(TryView, DetailView):
     template_name = 'users/profile.html'
@@ -59,72 +69,36 @@ class ProfileFollowingView(TryView, ListView):
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Profile.objects.get(user=user).get_following()    
-
-
-
-
-
-#class ProfileView(DetailView):
-#    model = Profile
-#    template_name = 'users/profile.html'
-#    
-#    def get_object(self):
-#        return get_object_or_404(User, username=self.kwargs.get('username'))
-#    
-#    def get_user(self):
-#        if self.request.user is None:
-#            return None
-#        return self.request.user
-#    
-#    def friend_check(self):
-#        user = get_object_or_404(User, username=self.kwargs.get('username'))
-#        profile = Profile.objects.get(user=user)
-#        follower_list = self.request.user.profile.get_following()
-#        if profile in follower_list:
-#            return "Unfollow"
-#        else:
-#            return "Follow"
+    
+#class FollowingAPIView(APIView):
+#    authentication_classes = (authentication.SessionAuthentication,)
+#    permission_classes = (permissions.IsAuthenticated,)
 #
-#    def get_context_data(self, **kwargs):
-#        context = super(ProfileView, self).get_context_data(**kwargs)
-#        if self.friend_check() == "Unfollow":
-#            context['color'] = 'btn-info'
-#        else:
-#            context['color'] = 'btn-outline-info'
-#        return context
-#
-#class ProfileFollowerView(ListView):
-#    model = Profile
-#    template_name = 'users/followers.html' # <app>/<model?_<viewtype>.html
-#    context_object_name = 'followers'
-#    paginate_by = 50
-#    
-#    def get_queryset(self):
-#        user = get_object_or_404(User, username=self.kwargs.get('username'))
-#        return Profile.objects.get(user=user).get_followers()
-#    
-#        
-#class ProfileFollowingView(ListView):
-#    model = Profile
-#    template_name = 'users/following.html' # <app>/<model?_<viewtype>.html
-#    context_object_name = 'following'
-#    paginate_by = 50
-#    
-#    def get_queryset(self):
-#        user = get_object_or_404(User, username=self.kwargs.get('username'))
-#        return Profile.objects.get(user=user).get_following()
+#    def get(self, request, username=None, format=None):
+        
+        
+#        n_f = get_object_or_404(User, username=username)
+#        owner = self.request.user.profile
+#        new_friend = Profile.objects.get(user=n_f)
+        
+# =============================================================================
+#         updated = False
+#         friended = False
+#         if new_friend in owner.get_following():
+#             friended = False
+#             owner.remove_relationship(new_friend, 1)
+#         else:
+#             friended = True
+#             owner.add_relationship(new_friend, 1)
+#         updated = True
+#         data = {
+#             "updated": updated,
+#             "friended": friended
+#         }
+#         return Response(data)
+# 
+# =============================================================================
 
-class FollowRedirectView(RedirectView):
-    def get_redirect_url(self, *args, **kwargs):
-        n_f = get_object_or_404(User, username=self.kwargs.get('username'))
-        owner = self.request.user.profile
-        new_friend = Profile.objects.get(user=n_f)
-        url_ = new_friend.get_absolute_url()
-        if new_friend in owner.get_following():
-            owner.remove_relationship(new_friend, 1)
-        else:
-            owner.add_relationship(new_friend, 1)
-        return url_
 
 class PostFriendAPIView(APIView):
     authentication_classes = (authentication.SessionAuthentication,)

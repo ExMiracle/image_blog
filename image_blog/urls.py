@@ -14,7 +14,6 @@ urlpatterns = [
     path('user/<str:username>/followers', user_views.ProfileFollowerView.as_view(), name = 'profile-followers'),
     path('user/<str:username>/following', user_views.ProfileFollowingView.as_view(), name = 'profile-following'),
     path('edit/', user_views.profile, name='profile-edit'),
-    path('user/<str:username>/follow', user_views.FollowRedirectView.as_view(), name = 'follow'),
     path('api/user/<str:username>/follow', user_views.PostFriendAPIView.as_view(), name = 'api-follow'),
     path('login/', auth_views.LoginView.as_view(template_name = 'users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name = 'users/logout.html'), name='logout'),
