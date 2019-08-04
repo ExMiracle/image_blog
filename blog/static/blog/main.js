@@ -1,8 +1,9 @@
 $(function() {
-    $("#friend").click(function(event) {
+    $(".friend").click(function(event) {
         console.log("please");
         event.preventDefault();
         var this_ = $(this)
+        var id = this_.attr('id').split('-')[1];
         var friendUrl = this_.attr("data-href")
         
         $.ajax({
@@ -25,8 +26,6 @@ $(function() {
                 console.log(error)
                 console.log("error")
             }
-    
-    
         });
     });
 });

@@ -1,0 +1,25 @@
+{% extends "blog/base_profile.html" %}
+{% block profile %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      {% if messages %}
+        {% for message in messasges %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    <h3 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h3>
+    {% include "blog/posts_with_pagination.html" %}
+    </div>
+    <div class="col-md-4">
+      <div class="content-section">
+        <h3>That's me</h3>
+        <p class='text-muted'>TODO: Post tags</p>
+        <hr>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

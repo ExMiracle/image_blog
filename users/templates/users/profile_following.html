@@ -1,0 +1,21 @@
+{% extends "blog/base_profile.html" %}
+{% load static %}
+{% block profile %}
+  <ul class="list-group">
+      {% for follower in following %}
+      <li class="list-group-item">
+            <img class="rounded-circle article-img" src="{{ follower.image.url }}">
+            <span>{{ follower.get_username }}</span>
+            {% if request.user.profile == follower %}
+            {% else %}
+                <a class="btn btn-sm btn-info friend float-right" id="friend-{{follower.get_username}}"
+                 data-href="{% url 'api-follow' follower.get_username %}" 
+                 href="">Unfollow</a>
+            {% endif %}
+    </li>
+      {% endfor %}
+      </ul>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="{% static 'blog/main.js' %}"></script>
+</article>      
+{% endblock %} 

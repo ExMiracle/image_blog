@@ -1,0 +1,28 @@
+{% extends "blog/base_else.html" %}
+{% block content2 %}
+<div class="content-section">
+  <div class="container navbar-expand-md navbar-light bg-white pb-3">
+      <button class="navbar-toggler" 
+              type="button" data-toggle="collapse" 
+              data-target="#navbarToggleProfile" aria-controls="navbarToggleProfile" 
+              aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarToggleProfile">
+        <div class="navbar-nav nav-tabs nav-fill w-100 align-items-start">
+          <a class="nav-item nav-link" href="{% url 'profile' user.username %}">Overview</a>
+          <a class="nav-item nav-link" href="{% url 'profile-posts' user.username %}">Posts</a>
+          <a class="nav-item nav-link" href="{% url 'profile-following' user.username %}">Following</a>
+          <a class="nav-item nav-link" href="{% url 'profile-followers' user.username %}">Followers</a>
+        </div>
+      </div>
+  </div>
+  <div>{{ user.username }}</div>
+
+
+      {% block profile %}
+      {% endblock profile %}
+
+
+</div>
+{% endblock %}

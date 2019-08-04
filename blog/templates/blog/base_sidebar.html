@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% block blog %}
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% if messages %}
+            {% for message in messasges %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% block content %}{% endblock %}
+        </div>
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>That's me</h3>
+            <p class='text-muted'>TODO: Post tags</p>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </main>
+{% endblock blog %}

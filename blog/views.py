@@ -23,20 +23,13 @@ class PostListView(ListView):
     
 class UserPostListView(ListView):
     model = Post
-    template_name = 'blog/user_posts.html' # <app>/<model?_<viewtype>.html
+    template_name = 'users/profile_posts.html' # <app>/<model?_<viewtype>.html
     context_object_name = 'posts'
     paginate_by = 5
     
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Post.objects.filter(author=user).order_by('-date_posted')
-    
-    # def get_context_data(self, **kwargs):
-    #     # Call the base implementation first to get a context
-    #     context = super().get_context_data(**kwargs)
-    #     # Add in the publisher
-    #     context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
-    #     return context
     
 class PostDetailView(DetailView):
     model = Post
