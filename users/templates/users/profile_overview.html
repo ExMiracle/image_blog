@@ -1,5 +1,6 @@
 {% extends "blog/base_profile.html" %}
 {% load static %}
+{% load follow_tag %}
 {% block profile %}
 <div class="media-body text-center">
 <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
@@ -13,7 +14,7 @@
       {% if request.user.is_authenticated %}
         <a class="btn {{color}} friend" id="friend"
          data-href="{% url 'api-follow' user.username %}" 
-         href="">{{ view.friend_check }}</a>
+         href="">{% follow_check request.user.profile user.profile  %}</a>
       {% endif %}
     {% endif %}
 </div>

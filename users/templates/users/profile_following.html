@@ -1,16 +1,20 @@
 {% extends "blog/base_profile.html" %}
 {% load static %}
+{% load follow_tag %}
 {% block profile %}
   <ul class="list-group">
       {% for follower in following %}
       <li class="list-group-item">
+            <a  href="{% url 'profile' follower.get_username %}">
             <img class="rounded-circle article-img" src="{{ follower.image.url }}">
-            <span>{{ follower.get_username }}</span>
-            {% if request.user.profile == follower %}
-            {% else %}
-                <a class="btn btn-sm btn-info friend float-right" id="friend-{{follower.get_username}}"
+            </a>
+            <a class="card-link text-dark" href="{% url 'profile' follower.get_username %}">{{ follower.get_username }}</a>
+            {% if request.user.is_authenticated %}
+              {% if request.user.profile != follower %}
+                <a class="btn btn-sm {{color}} friend float-right" id="friend-{{follower.get_username}}"
                  data-href="{% url 'api-follow' follower.get_username %}" 
-                 href="">Unfollow</a>
+                 href="">{% follow_check request.user.profile follower %}</a>
+              {% endif %}
             {% endif %}
     </li>
       {% endfor %}

@@ -23,6 +23,13 @@ class Profile(models.Model):
     
     def get_username(self):
         return self.user.username
+    
+    def follow_check(self, person):
+        follower_list = self.get_following()
+        if person in follower_list:
+            return "Unfollow"
+        else:
+            return "Follow"
         
 #    def get_friend_url(self):
 #        username = User.objects.get(username=self.user).username

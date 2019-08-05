@@ -27,15 +27,14 @@ class TryView(View):
 
     def get_context_data(self, **kwargs):
         context = super(TryView, self).get_context_data(**kwargs)
+        context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
         if self.friend_check() == None:
             return context
         elif self.friend_check() == "Unfollow":
             context['color'] = 'btn-info'
         else:
             context['color'] = 'btn-outline-info'
-        context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
         return context
-
 
 class ProfileView(TryView, DetailView):
     template_name = 'users/profile_overview.html'
@@ -43,21 +42,10 @@ class ProfileView(TryView, DetailView):
     def get_object(self):
         return get_object_or_404(User, username=self.kwargs.get('username'))
     
-    # def get_user(self):
-    #     if self.request.user is None:
-    #         return None
-    #     return self.request.user
-        # return get_object_or_404(User, username=self.kwargs.get('username'))
-    
 class ProfileFollowerView(TryView, ListView):
     template_name = 'users/profile_followers.html' # <app>/<model?_<viewtype>.html
     context_object_name = 'followers'
     paginate_by = 50
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super(ProfileFollowerView, self).get_context_data(**kwargs)
-    #     context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
-    #     return context
     
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
