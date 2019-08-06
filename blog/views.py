@@ -8,11 +8,38 @@ from django.views.generic import (ListView,
                                   DeleteView)
 from .models import Post
 
-def home(request):
-    context = {
-            'posts': Post.objects.all()
-    }
-    return render(request, 'blog/home.html', context)
+# =============================================================================
+# REST
+# =============================================================================
+
+from .serializers import PostSerializer
+from rest_framework import generics
+#from rest_framework.renderers import TemplateHTMLRenderer
+#from rest_framework.response import Response
+
+class PostListAPIView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all().order_by('-date_posted')
+    page_size = 5
+    
+#    renderer_classes = [TemplateHTMLRenderer]
+#    template_name = 'blog/home.html'
+#    def get(self, request):
+#        queryset = Post.objects.all().order_by('-date_posted')
+#        return Response({'posts': queryset})
+    
+class UserPostListAPIView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    page_size = 5
+    
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs['username'])
+        return Post.objects.filter(author=user).order_by('-date_posted')
+
+
+# =============================================================================
+# Main part of the site
+# =============================================================================
 
 class PostListView(ListView):
     model = Post

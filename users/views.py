@@ -13,28 +13,28 @@ from django.views.generic import DetailView, ListView, View
 class TryView(View):
     model = Profile
 
-    def friend_check(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        profile = Profile.objects.get(user=user)
-        if self.request.user.is_authenticated:
-            follower_list = self.request.user.profile.get_following()
-            if profile in follower_list:
-                return "Unfollow"
-            else:
-                return "Follow"
-        else:
-            return None
-
-    def get_context_data(self, **kwargs):
-        context = super(TryView, self).get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
-        if self.friend_check() == None:
-            return context
-        elif self.friend_check() == "Unfollow":
-            context['color'] = 'btn-info'
-        else:
-            context['color'] = 'btn-outline-info'
-        return context
+#    def friend_check(self):
+#        user = get_object_or_404(User, username=self.kwargs.get('username'))
+#        profile = Profile.objects.get(user=user)
+#        if self.request.user.is_authenticated:
+#            follower_list = self.request.user.profile.get_following()
+#            if profile in follower_list:
+#                return "Unfollow"
+#            else:
+#                return "Follow"
+#        else:
+#            return None
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(TryView, self).get_context_data(**kwargs)
+#        context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
+#        if self.friend_check() == None:
+#            return context
+#        elif self.friend_check() == "Unfollow":
+#            context['color'] = 'btn-info'
+#        else:
+#            context['color'] = 'btn-outline-info'
+#        return context
 
 class ProfileView(TryView, DetailView):
     template_name = 'users/profile_overview.html'
