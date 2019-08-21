@@ -2,7 +2,7 @@
 {% load static %}
 {% block profile %}
   <ul class="list-group">
-    {% with my_friends=request.user.profile.get_following %}    
+    {% with my_friends=request.user.profile.get_following %}
       {% for follower in following %}
       <li class="list-group-item">
             <a  href="{% url 'profile' follower.get_username %}">
@@ -28,5 +28,4 @@
       </ul>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="{% static 'blog/main.js' %}"></script>
-</article>      
 {% endblock %} 

@@ -1,64 +1,54 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.shortcuts import get_object_or_404
-from .models import Profile
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView, View
+from rest_framework import authentication, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .models import Profile
+
 
 class TryView(View):
     model = Profile
 
-#    def friend_check(self):
-#        user = get_object_or_404(User, username=self.kwargs.get('username'))
-#        profile = Profile.objects.get(user=user)
-#        if self.request.user.is_authenticated:
-#            follower_list = self.request.user.profile.get_following()
-#            if profile in follower_list:
-#                return "Unfollow"
-#            else:
-#                return "Follow"
-#        else:
-#            return None
-#
-#    def get_context_data(self, **kwargs):
-#        context = super(TryView, self).get_context_data(**kwargs)
-#        context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
-#        if self.friend_check() == None:
-#            return context
-#        elif self.friend_check() == "Unfollow":
-#            context['color'] = 'btn-info'
-#        else:
-#            context['color'] = 'btn-outline-info'
-#        return context
+    def get_context_data(self, **kwargs):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        context = super(TryView, self).get_context_data(**kwargs)
+        context['user'] = user
+        return context
 
-class ProfileView(TryView, DetailView):
+
+class ProfileView(DetailView):
+    model = Profile
     template_name = 'users/profile_overview.html'
-    
+
     def get_object(self):
         return get_object_or_404(User, username=self.kwargs.get('username'))
-    
+
+
 class ProfileFollowerView(TryView, ListView):
-    template_name = 'users/profile_followers.html' # <app>/<model?_<viewtype>.html
+    template_name = 'users/profile_followers.html'  # <app>/<model?_<viewtype>.html
     context_object_name = 'followers'
     paginate_by = 50
-    
+
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Profile.objects.get(user=user).get_followers()
-    
+
+
 class ProfileFollowingView(TryView, ListView):
-    template_name = 'users/profile_following.html' # <app>/<model?_<viewtype>.html
+    template_name = 'users/profile_following.html'  # <app>/<model?_<viewtype>.html
     context_object_name = 'following'
     paginate_by = 50
-    
+
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return Profile.objects.get(user=user).get_following()    
+        return Profile.objects.get(user=user).get_following()
+
 
 class PostFriendAPIView(APIView):
     authentication_classes = (authentication.SessionAuthentication,)
@@ -83,6 +73,7 @@ class PostFriendAPIView(APIView):
         }
         return Response(data)
 
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -94,6 +85,7 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -110,9 +102,9 @@ def profile(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
-        
+
     context = {
-            'u_form': u_form,
-            'p_form': p_form 
+        'u_form': u_form,
+        'p_form': p_form
     }
     return render(request, 'users/profile_edit.html', context)

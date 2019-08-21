@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
+    'taggit',
 #    'coverage',
     'django.contrib.admin',
     'django.contrib.sites',
