@@ -21,7 +21,7 @@
             {% block comment_item %}
             <div>
               <img class="rounded-circle comment-img" src="{{ comment.user.profile.image.url }}">
-              <h6>
+              <h6 style="display:inline;">
                 {% block comment_title %}
                   {% if comment.url %}<a href="{{ comment.url }}" rel="nofollow">{% endif %}
                   {% if comment.name %}{{ comment.name }}{% else %}{% trans "Anonymous" %}{% endif %}{% comment %}

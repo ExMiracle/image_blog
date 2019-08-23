@@ -14,9 +14,17 @@
         </div>
         <div class="col-md-4">
           <div class="content-section">
-            <h3>That's me</h3>
-            <p class='text-muted'>TODO: Post tags</p>
+            <h3>Tags</h3>
             <hr>
+              <ul>
+                {% if tags %}
+                  {% for tag in tags %}
+                    <li class='text-muted'>{{ tag }}</li>
+                  {% endfor %}
+                {% else %}
+                    <p>None yet</p>
+                {% endif %}
+              </ul>
           </div>
         </div>
       </div>
