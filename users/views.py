@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from .models import Profile
+from blog.models import Post
 
 
 class TryView(View):
@@ -19,15 +20,25 @@ class TryView(View):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         context = super(TryView, self).get_context_data(**kwargs)
         context['user'] = user
+        context['follower_count'] = Profile.objects.get(user=user).get_followers().count()
+        context['following_count'] = Profile.objects.get(user=user).get_following().count()
         return context
 
 
-class ProfileView(DetailView):
-    model = Profile
+class ProfileView(DetailView, TryView):
     template_name = 'users/profile_overview.html'
 
     def get_object(self):
         return get_object_or_404(User, username=self.kwargs.get('username'))
+
+    def get_context_data(self, **kwargs):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        context['latest_posts'] = Post.objects.filter(author=user).order_by('-date_posted')[:5]
+        context['post_count'] = Post.objects.filter(author=user).count()
+        context['follower_count'] = Profile.objects.get(user=user).get_followers().count()
+        context['following_count'] = Profile.objects.get(user=user).get_following().count()
+        return context
 
 
 class ProfileFollowerView(TryView, ListView):

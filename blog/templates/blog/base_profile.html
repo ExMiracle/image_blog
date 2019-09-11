@@ -12,8 +12,8 @@
         <div class="navbar-nav nav-tabs nav-fill w-100 align-items-start">
           <a class="nav-item nav-link" href="{% url 'profile' user.username %}">Overview</a>
           <a class="nav-item nav-link" href="{% url 'profile-posts' user.username %}">Posts</a>
-          <a class="nav-item nav-link" href="{% url 'profile-following' user.username %}">Following</a>
-          <a class="nav-item nav-link" href="{% url 'profile-followers' user.username %}">Followers</a>
+          <a class="nav-item nav-link" href="{% url 'profile-following' user.username %}">Following ({{ following_count }})</a>
+          <a class="nav-item nav-link" href="{% url 'profile-followers' user.username %}">Followers ({{ follower_count }})</a>
         </div>
       </div>
   </div>

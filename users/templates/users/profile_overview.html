@@ -23,4 +23,13 @@
       {% endif %}
     {% endif %}
 </div>
+<div class="content-section">
+    <h5>Posts created:{{ post_count }}</h5>
+    <p>Latest posts:</p>
+    <ul style="list-style-type:none;">
+    {% for post in latest_posts %}
+        <li><a href="{% url 'post-detail' post.id %}">{{post.title}}</a>  |  {{post.content|slice:":50"}}</li>
+    {% endfor %}
+    </ul>
+</div>
 {% endblock %}

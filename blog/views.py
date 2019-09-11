@@ -1,21 +1,22 @@
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import (ListView,
                                   DetailView,
                                   CreateView,
                                   UpdateView,
-                                  FormView,
                                   DeleteView)
-from .models import Post
+from rest_framework import generics
 from taggit.models import Tag
+from users.models import Profile
+
+from .models import Post
+from .serializers import PostSerializer
+
 
 # =============================================================================
 # REST
 # =============================================================================
-
-from .serializers import PostSerializer
-from rest_framework import generics
 
 
 # from rest_framework.renderers import TemplateHTMLRenderer
@@ -64,9 +65,12 @@ class UserPostListView(ListView):
         return Post.objects.filter(author=user).order_by('-date_posted')
 
     def get_context_data(self, **kwargs):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
         context = super(UserPostListView, self).get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, username=self.kwargs.get('username'))
+        context['user'] = user
         context['tags'] = Tag.objects.all()
+        context['follower_count'] = Profile.objects.get(user=user).get_followers().count()
+        context['following_count'] = Profile.objects.get(user=user).get_following().count()
         return context
 
 
